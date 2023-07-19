@@ -3,7 +3,6 @@ import { gender } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 interface ContactParams {
-    id: string;
     name: string;
     email: string;
     phone: string;
@@ -47,6 +46,7 @@ export class ContactsService {
     }
 
     async createContact(body: ContactParams) {
+        console.log(body)
         const contact = await this.prismaService.contacts.create({
             data: {
                 name: body.name,
@@ -56,8 +56,8 @@ export class ContactsService {
                 userId: body.userId
             }
         });
-
-        return contact
+        console.log('contact created')
+        return 'contact created'
     }
 
     async updateContact(id: string, data: UpdateContactParams) {

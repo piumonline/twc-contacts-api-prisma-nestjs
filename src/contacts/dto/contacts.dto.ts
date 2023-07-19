@@ -1,5 +1,5 @@
 import { gender } from "@prisma/client"
-import { IsOptional } from "class-validator"
+import { IsEnum, IsOptional, IsString } from "class-validator"
 
 
 export class GetContactsResponseDto {
@@ -14,13 +14,23 @@ export class GetContactsResponseDto {
   }
   
   export class CreateContactDto {
-    id:        string 
+
+    @IsString()
     name:      string
+
+    @IsEnum(gender)
     gender:    gender
+
+    @IsString()
     email:     string
+
+    @IsString()
     phone:     string
+
     createdAt: Date
     updatedAt: Date
+
+    @IsString()
     userId:    string
   }
   

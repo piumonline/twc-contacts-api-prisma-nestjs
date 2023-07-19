@@ -6,7 +6,6 @@ import * as jwt from 'jsonwebtoken';
 interface RegisterParams {
     email: string;
     password: string;
-    name: string;
 }
 
 interface LoginParams {
@@ -19,7 +18,7 @@ export class AuthService {
 
     constructor(private readonly prismaService: PrismaService){}
 
-    async register({email, password, name}: RegisterParams) {
+    async register({email, password }: RegisterParams) {
         const userExsists = await this.prismaService.users.findFirst({
             where: {email}
         });
@@ -33,7 +32,6 @@ export class AuthService {
             data: {
                 email: email,
                 password: hashPasswrd,
-                name: name
             }
         });
 
