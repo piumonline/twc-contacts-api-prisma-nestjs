@@ -7,7 +7,6 @@ interface ContactParams {
     email: string;
     phone: string;
     gender: gender;
-    userId: string;
 }
 
 interface UpdateContactParams {
@@ -23,9 +22,16 @@ export class ContactsService {
 
     constructor(private readonly prismaService: PrismaService){}
 
-    async getAllContacts() {
+    async getAllContacts(userId: string) {
+        console.log("userid")
 
-        const contacts = await this.prismaService.contacts.findMany()
+        console.log(userId)
+
+        const contacts = await this.prismaService.contacts.findMany({
+            where: {
+                userId: userId
+            }
+        })
 
         if(!contacts) throw new NotFoundException('Not found contacts')
 
@@ -45,15 +51,14 @@ export class ContactsService {
             return contact
     }
 
-    async createContact(body: ContactParams) {
-        console.log(body)
+    async createContact(body: ContactParams, userId: string) {
         const contact = await this.prismaService.contacts.create({
             data: {
                 name: body.name,
                 email: body.email,
                 phone: body.phone,
                 gender: body.gender,
-                userId: body.userId
+                userId: userId
             }
         });
         console.log('contact created')
@@ -61,14 +66,6 @@ export class ContactsService {
     }
 
     async updateContact(id: string, data: UpdateContactParams) {
-
-        const contact = await this.prismaService.contacts.findUnique({
-            where: {
-                id: id
-            }
-        })
-
-        if(!contact) throw new NotFoundException('Not found contact')
 
         const updatedcontact = await this.prismaService.contacts.update({
             where: {
@@ -80,13 +77,6 @@ export class ContactsService {
         return updatedcontact
     }
     async deleteContact(id: string) {
-        const contact = await this.prismaService.contacts.findUnique({
-            where: {
-                id: id
-            }
-        })
-
-        if(!contact) throw new NotFoundException('Not found contact')
 
         const deletedContact = await this.prismaService.contacts.delete({
             where: {
@@ -95,5 +85,19 @@ export class ContactsService {
         });
 
         return id
+    }
+
+    async getUserId(id: string) {
+        const currentuser = await this.prismaService.contacts.findFirst({
+            where: {
+                id:id
+            },
+            select: {
+                userId: true
+            }
+        })
+
+        if(!currentuser) throw new NotFoundException('Not found user')
+        return currentuser.userId
     }
 }

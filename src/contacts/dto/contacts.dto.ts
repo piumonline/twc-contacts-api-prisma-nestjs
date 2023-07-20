@@ -30,8 +30,7 @@ export class GetContactsResponseDto {
     createdAt: Date
     updatedAt: Date
 
-    @IsString()
-    userId:    string
+
   }
   
   export class UpdateContactsDto {
